@@ -62,7 +62,7 @@ class SuperLearner(object):
 			self.num_classes = np.unique(y)
 
 			if len(self.num_classes) == 2:
-				self.num_classes = 2
+				self.num_classes = 1
 			elif len(self.num_classes) > 2:
 				self.num_classes = len(self.num_classes)
 				self.output = 'cat'
