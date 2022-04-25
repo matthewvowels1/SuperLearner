@@ -2,7 +2,6 @@ import numpy as np
 from sklearn.model_selection import KFold, StratifiedKFold
 from scipy.optimize import minimize
 from scipy.optimize import nnls
-from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.preprocessing import PolynomialFeatures#
 import pandas as pd
 from sklearn.calibration import CalibratedClassifierCV
@@ -12,6 +11,7 @@ from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, AdaBoostC
 from sklearn.neural_network import MLPRegressor, MLPClassifier
 from warnings import filterwarnings
 from sklearn.naive_bayes import GaussianNB
+from tqdm import tqdm
 
 
 
@@ -135,7 +135,7 @@ class SuperLearner(object):
 		all_preds = np.zeros((len(y), len(self.learner_list)))  # for test preds
 
 		i = 0
-		for key in self.learner_list:
+		for key in tqdm(self.learner_list):
 
 			preds = []
 			gts = []
@@ -200,7 +200,7 @@ class SuperLearner(object):
 		if self.standardized_outcome:
 			y = (y - self.y_mean) / self.y_std
 
-		for key in self.est_dict.keys():
+		for key in tqdm(self.est_dict.keys()):
 
 			est = self.est_dict[key]
 
