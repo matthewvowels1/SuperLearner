@@ -175,7 +175,7 @@ class SuperLearner(object):
 		return weighted_preds
 
 	def predict_proba(self, x):
-		x = x.values if isinstance(x, pd.DataFrame) else x
+		x = x.values.astype('float') if isinstance(x, pd.DataFrame) else x
 
 		x_ = (x - self.x_mean) / self.x_std
 
