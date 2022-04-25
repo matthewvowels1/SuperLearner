@@ -47,8 +47,8 @@ class SuperLearner(object):
 		self.num_classes = None
 
 	def fit(self, x, y):
-		x = x.values if isinstance(x, pd.DataFrame) else x
-		y = y.values[:, 0] if isinstance(y, pd.DataFrame) else y
+		x = x.values.astype('float') if isinstance(x, pd.DataFrame) else x
+		y = y.values[:, 0].astype('float') if isinstance(y, pd.DataFrame) else y
 
 		# mean and std for full dataset (can be reused wth new data at prediction time)
 		self.x_std = x.std(0)
