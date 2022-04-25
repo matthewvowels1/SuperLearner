@@ -11,7 +11,7 @@ from sklearn.svm import SVR, SVC
 from sklearn.ensemble import RandomForestRegressor, AdaBoostRegressor, AdaBoostClassifier, RandomForestClassifier
 from sklearn.neural_network import MLPRegressor, MLPClassifier
 from warnings import filterwarnings
-from sklearn.naive_bayes import GaussianNB, MultinomialNB
+from sklearn.naive_bayes import GaussianNB
 
 
 
@@ -95,7 +95,7 @@ class SuperLearner(object):
 			elif learner == 'BR' or 'NB':
 				if ((self.output == 'cls') or (
 						self.output == 'proba') or (self.output == 'cat')):
-					est_dict[learner] = GaussianNB() if self.num_classes == 2 else MultinomialNB()
+					est_dict[learner] = GaussianNB()
 				else:
 					est_dict[learner] = BayesianRidge()
 
