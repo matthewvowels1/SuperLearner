@@ -112,12 +112,16 @@ class SuperLearner(object):
 
 		self.est_dict = est_dict
 		self.num_learners = len(list(self.est_dict.keys()))
+		self.learner_list = list(self.est_dict.keys())
 
 
 	def fit(self, x, y):
 		filterwarnings('ignore')
 		x = x.values.astype('float') if isinstance(x, pd.DataFrame) else x
 		y = y.values[:, 0].astype('float') if isinstance(y, pd.DataFrame) else y
+
+		x = x.values.astype('float') if isinstance(x, pd.Series) else x
+		y = y.values[:, 0].astype('float') if isinstance(y, pd.Series) else y
 
 		# mean and std for full dataset (can be reused wth new data at prediction time)
 		self.x_std = x.std(0)
@@ -140,6 +144,8 @@ class SuperLearner(object):
 			kf = StratifiedKFold(n_splits=self.k, shuffle=True, random_state=0)
 		else:
 			kf = KFold(n_splits=self.k, shuffle=True, random_state=0)
+
+		self._init_learners()
 
 		all_preds = np.zeros((len(y), self.num_learners))  # for test preds
 
@@ -185,6 +191,7 @@ class SuperLearner(object):
 					if ((self.output == 'cls') or (
 							self.output == 'proba') or (self.output == 'cat')):
 						est = CalibratedClassifierCV(base_estimator=est, cv=8)
+
 					est.fit(x_train, y_train)
 
 				p = est.predict(x_test_poly) if key == 'poly' else est.predict(x_test)
@@ -230,6 +237,7 @@ class SuperLearner(object):
 
 	def predict(self, x):
 		x = x.values.astype('float') if isinstance(x, pd.DataFrame) else x
+		x = x.values.astype('float') if isinstance(x, pd.Series) else x
 		x_ = (x - self.x_mean) / self.x_std
 		all_preds = np.zeros((len(x_), self.num_learners))
 		i = 0
@@ -254,7 +262,7 @@ class SuperLearner(object):
 
 	def predict_proba(self, x):
 		x = x.values.astype('float') if isinstance(x, pd.DataFrame) else x
-
+		x = x.values.astype('float') if isinstance(x, pd.Series) else x
 		x_ = (x - self.x_mean) / self.x_std
 
 		all_preds = np.zeros((len(x), self.num_classes, self.num_learners))
